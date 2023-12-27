@@ -1,3 +1,4 @@
+import inspect
 import logging
 from src import app, config
 from src.bot_commands import Bot
@@ -9,9 +10,15 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 def main() -> None:
     bot = Bot(config.API_ENDPOINT)
 
-    app.add_handler(CommandHandler("start", bot.start))
+    # Check if bot.start is a coroutine function
+    if inspect.iscoroutinefunction(bot.start):
+        print("bot.start is a coroutine function")
+    
+    # Check if bot.handle_message is a coroutine function
+    if inspect.iscoroutinefunction(bot.handle_message):
+        print("bot.handle_message is a coroutine function")
 
-     # Add message handler for handling all messages
+    app.add_handler(CommandHandler("start", bot.start))
     app.add_handler(MessageHandler(filters.TEXT, bot.handle_message))
 
     app.run_polling()
