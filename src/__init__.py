@@ -16,6 +16,4 @@ elif python_env == "PROD":
 else:
     raise ValueError("Invalid value for PYTHON_ENV")
 
-# Ensure Application is created only once
-if 'app' not in globals():
-    app = ApplicationBuilder().token(config.TELEGRAM_TOKEN).build()
+app = ApplicationBuilder().token(config.TELEGRAM_TOKEN).build()

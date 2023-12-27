@@ -18,6 +18,9 @@ def main() -> None:
     if inspect.iscoroutinefunction(bot.handle_message):
         print("bot.handle_message is a coroutine function")
 
+    if inspect.iscoroutinefunction(app):
+        print("app is a coroutine function")
+
     app.add_handler(CommandHandler("start", bot.start))
     app.add_handler(MessageHandler(filters.TEXT, bot.handle_message))
 
