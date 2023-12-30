@@ -6,15 +6,17 @@ on:
       - main
 
 env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   DOCKER_IMAGE: omoi/trading-bot:latest
-  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
-  AWS_DIR: ~/docker/trading-bot
+  
+  AWS_DIR: ~/docker/apps/trading-bot
   AWS_SERVER: ${{ secrets.AWS_SERVER }}
+  AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+  
   PYTHON_ENV: ${{ secrets.PYTHON_ENV }}
   API_ENDPOINT: ${{ secrets.API_ENDPOINT }}
   TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
 jobs:
   build-and-push:
@@ -47,10 +49,10 @@ jobs:
     - name: Push Docker Image
       run: docker push ${{ env.DOCKER_IMAGE }}
           
-    # - name: Deploy to AWS server
-    #   run: |
-    #     echo "${{ env.AWS_SSH_KEY }}" > key.pem
-    #     chmod 400 key.pem
-    #     scp -o StrictHostKeyChecking=no -i key.pem docker-compose.yml ubuntu@${{ env.AWS_SERVER }}:${{ env.AWS_DIR }}
-    #     ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@${{ env.AWS_SERVER }} 'cd ${{ env.AWS_DIR }} && docker-compose down && docker-compose pull && docker-compose up -d'
+    - name: Deploy to AWS server
+      run: |
+        echo "${{ env.AWS_SSH_KEY }}" > key.pem
+        chmod 400 key.pem
+        scp -P 615 -i key.pem docker-compose.yml omoi@${{ env.AWS_SERVER }}:${{ env.AWS_DIR }}
+        ssh -i key.pem -p 615 -o StrictHostKeyChecking=no omoi@${{ env.AWS_SERVER }} 'cd ${{ env.AWS_DIR }} && docker-compose down && docker-compose pull && docker-compose up -d'
 
