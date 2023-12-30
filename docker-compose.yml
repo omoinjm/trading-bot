@@ -1,5 +1,5 @@
 version: '3'
 services:
-  trading-bot:
+  omoi-trading-bot:
     image: omoi/trading-bot:latest
-    container_name: trading-bot
+    container_name: omoi-trading-bot
